@@ -72,4 +72,5 @@ TEST_F(TestMacros, throw_on_not_null)
   EXPECT_ANY_THROW(THROW_ON_NOT_NULLPTR(*i_ptr_ptr));
 
   delete a_ptr;
+  delete i_ptr;
 }
