@@ -73,6 +73,8 @@ controller_interface::return_type TestController::update(
   }
   else
   {
+    std::cout << "External commands for testing: " << external_commands_for_testing_.size() << std::endl;
+    std::cout << "command_interfaces: " << command_interfaces_.size() << std::endl;
     for (size_t i = 0; i < command_interfaces_.size(); ++i)
     {
       RCLCPP_INFO(
@@ -109,7 +111,11 @@ CallbackReturn TestController::on_cleanup(const rclcpp_lifecycle::State & /*prev
 void TestController::set_command_interface_configuration(
   const controller_interface::InterfaceConfiguration & cfg)
 {
+  std::cout << "Setting command interface configuration for " << cfg.names.size() << " command interfaces " << std::endl;
   cmd_iface_cfg_ = cfg;
+  for (size_t i = 0; i < cmd_iface_cfg_.names.size(); ++i) {
+    std::cout << cmd_iface_cfg_.names[i] << std::endl;
+  }
   external_commands_for_testing_.resize(cmd_iface_cfg_.names.size(), 0.0);
 }
 

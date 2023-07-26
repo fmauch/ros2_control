@@ -138,6 +138,8 @@ TEST_F(TestControllerManagerSrvs, list_controllers_srv)
     result->controller[0].required_state_interfaces,
     UnorderedElementsAre("joint1/position", "joint1/velocity", "joint2/position"));
 
+  std::cout << "reconfiguring to ALL interfaces..." << std::endl;
+
   cmd_cfg = {controller_interface::interface_configuration_type::ALL};
   test_controller->set_command_interface_configuration(cmd_cfg);
   state_cfg = {controller_interface::interface_configuration_type::ALL};
