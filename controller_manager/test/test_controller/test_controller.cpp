@@ -94,6 +94,20 @@ CallbackReturn TestController::on_configure(const rclcpp_lifecycle::State & /*pr
   return CallbackReturn::SUCCESS;
 }
 
+CallbackReturn TestController::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
+{
+  if (cmd_iface_cfg_.type == controller_interface::interface_configuration_type::ALL)
+  {
+    external_commands_for_testing_.resize(command_interfaces_.size(), 0.0);
+    cmd_iface_cfg_.names.resize(command_interfaces_.size());
+    for (size_t i = 0; i < command_interfaces_.size(); ++i)
+    {
+      cmd_iface_cfg_.names[i] = command_interfaces_[i].get_name();
+    }
+  }
+  return CallbackReturn::SUCCESS;
+}
+
 CallbackReturn TestController::on_cleanup(const rclcpp_lifecycle::State & /*previous_state*/)
 {
   if (simulate_cleanup_failure)
