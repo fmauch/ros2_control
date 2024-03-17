@@ -9,14 +9,11 @@ on:
       - humble
   push:
     branches:
-      - humble
-  schedule:
-    # Run every morning to detect flakiness and broken dependencies
-    - cron: '03 1 * * *'
+      - test_error
 
 jobs:
   binary:
-    uses: ros-controls/ros2_control_ci/.github/workflows/reusable-industrial-ci-with-cache.yml@master
+    uses: fmauch/ros2_control_ci/.github/workflows/reusable-industrial-ci-with-cache.yml@debug_ici_outputs
     strategy:
       matrix:
         ROS_DISTRO: [humble]
