@@ -131,6 +131,8 @@ TEST_F(TestLoadController, multi_ctrls_test_type_in_param)
   cm_->set_parameter(rclcpp::Parameter("ctrl_2.type", test_controller::TEST_CONTROLLER_CLASS_NAME));
   cm_->set_parameter(rclcpp::Parameter("ctrl_3.type", test_controller::TEST_CONTROLLER_CLASS_NAME));
 
+  raise(SIGSEGV);
+
   ControllerManagerRunner cm_runner(this);
   EXPECT_EQ(call_spawner("ctrl_1 ctrl_2 -c test_controller_manager"), 0);
 
