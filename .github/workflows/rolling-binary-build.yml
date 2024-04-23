@@ -4,12 +4,14 @@ name: Rolling Binary Build
 
 on:
   workflow_dispatch:
+    branches:
+      - testing
   pull_request:
     branches:
       - master
   push:
     branches:
-      - master
+      - testing
   schedule:
     # Run every morning to detect flakiness and broken dependencies
     - cron: '03 1 * * *'
