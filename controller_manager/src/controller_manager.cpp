@@ -14,11 +14,14 @@
 
 #include "controller_manager/controller_manager.hpp"
 
+#include <iomanip>
 #include <memory>
 #include <set>
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <rclcpp/logging.hpp>
 
 #include "controller_interface/controller_interface_base.hpp"
 #include "controller_manager_msgs/msg/hardware_component_state.hpp"
@@ -2256,6 +2259,11 @@ controller_interface::return_type ControllerManager::update(
   ++update_loop_counter_;
   update_loop_counter_ %= update_rate_;
 
+  RCLCPP_INFO(get_logger(), "update time: %f", time.seconds());
+  // RCLCPP_INFO_STREAM(
+  // get_logger(), std::left << std::setw(50) << std::setprecision(6) << std::fixed
+  //<< "measured period from control_node: " << period.seconds());
+
   std::vector<std::string> failed_controllers_list;
   for (const auto & loaded_controller : rt_controller_list)
   {
@@ -2274,7 +2282,7 @@ controller_interface::return_type ControllerManager::update(
         rclcpp::Time(0, 0, this->get_node_clock_interface()->get_clock()->get_clock_type()))
       {
         // it is zero after activation
-        RCLCPP_DEBUG(
+        RCLCPP_INFO(
           get_logger(), "Setting next_update_cycle_time to %fs for the controller : %s",
           time.seconds(), loaded_controller.info.name.c_str());
         *loaded_controller.next_update_cycle_time = time;
@@ -2294,6 +2302,18 @@ controller_interface::return_type ControllerManager::update(
       {
         const auto controller_actual_period =
           (time - *loaded_controller.next_update_cycle_time) + controller_period;
+        RCLCPP_INFO_STREAM_ONCE(
+          get_logger(), loaded_controller.info.name + ": "
+                          << std::left << std::setw(25) << "time" << std::setw(20)
+                          << "measured_period" << std::setw(25) << "next_update_cycle_time"
+                          << std::setw(20) << "actual period");
+        RCLCPP_INFO_STREAM(
+          get_logger(), loaded_controller.info.name + ": "
+                          << std::left << std::setw(25) << std::setprecision(20) << time.seconds()
+                          << std::setw(20) << std::setprecision(6) << period.seconds()
+                          << std::setw(25) << std::setprecision(20)
+                          << loaded_controller.next_update_cycle_time->seconds() << std::setw(20)
+                          << std::setprecision(6) << controller_actual_period.seconds());
         auto controller_ret = controller_interface::return_type::OK;
         // Catch exceptions thrown by the controller update function
         try
